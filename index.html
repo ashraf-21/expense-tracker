@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="page-wrapper">
+  <h2 class="title">Expense Tracker</h2>
+
+  <!-- IMAGE SCROLLER (we'll style it later) -->
+  <div class="image-slider">
+    <div class="slider-track">
+      <img src="./assets/money-bg.jpg">
+      <img src="./assets/mbag.jpg">
+      <img src="./assets/expense.jpg">
+      <img src="./assets/paying.jpg">
+      <img src="./assets/keep-tracking.jpg">
+      <img src="./assets/money-bg.jpg">
+      <img src="./assets/mbag.jpg">
+      <img src="./assets/expense.jpg">
+      <img src="./assets/paying.jpg">
+      <img src="./assets/keep-tracking.jpg">
+      <img src="./assets/money-bg.jpg">
+      <img src="./assets/mbag.jpg">
+      <img src="./assets/expense.jpg">
+      <img src="./assets/paying.jpg">
+      <img src="./assets/keep-tracking.jpg">
+    </div>
+  </div>
+
+  <div class="dashboard">
+
+    <!-- LEFT SIDE -->
+    <div class="left-panel">
+      <div class="card balance-card">
+        <h4>Your Balance</h4>
+        <h1 id="balance">₹0</h1>
+      </div>
+      <div class="card inc-exp-container">
+         <div class="income">
+            <h4>Income</h4>
+            <p id="money-plus">₹0</p>
+         </div>
+        <div class="expense">
+            <h4>Expense</h4>
+            <p id="money-minus">₹0</p>
+         </div>
+    </div>
+      <div class="card history-card">
+         <h3>History</h3>
+         <ul id="list"></ul>
+      </div>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="right-panel">
+      <div class="card form-card">
+        <h3>Add Transaction</h3>
+        <form id="form">
+            <input type="text" id="text" placeholder="Description" required>
+            <input type="number" id="amount" placeholder="Amount (+/-)" required>
+            <button class="btn">Add</button>
+         </form>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+
+
+<script src="script.js"></script>
+</body>
+</html>
