@@ -2,79 +2,69 @@ const balance = document.getElementById('balance');
 const money_plus = document.getElementById('money-plus');
 const money_minus = document.getElementById('money-minus');
 const list = document.getElementById('list');
+const form = document.getElementById('form');
+const text = document.getElementById('text');
+const amount = document.getElementById('amount');
 
-const incomeForm = document.getElementById('income-form');
-const incomeInput = document.getElementById('income-input');
+let transactions = JSON.parse(localStorage.getItem('transactions')) || [];
 
-const expenseForm = document.getElementById('expense-form');
-const expenseText = document.getElementById('expense-text');
-const expenseAmount = document.getElementById('expense-amount');
+function addTransaction(e) {
+    e.preventDefault();
 
-let income = JSON.parse(localStorage.getItem('income')) || 0;
-let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
+    const transaction = {
+        id: Date.now(),
+        text: text.value,
+        amount: +amount.value
+    };
 
-/* ---------- INCOME ---------- */
-incomeForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-  income = +incomeInput.value;
-  localStorage.setItem('income', JSON.stringify(income));
-  incomeInput.value = '';
-  updateUI();
-});
+    transactions.push(transaction);
+    updateLocalStorage();
+    init();
 
-/* ---------- EXPENSE ---------- */
-expenseForm.addEventListener('submit', (e) => {
-  e.preventDefault();
+    text.value = '';
+    amount.value = '';
+}
 
-  const amount = +expenseAmount.value;
-  const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+function addTransactionDOM(transaction) {
+    const sign = transaction.amount < 0 ? '-' : '+';
 
-  if (totalExpense + amount > income) {
-    alert("You have used up all the income");
-    return;
-  }
-
-  const expense = {
-    id: Date.now(),
-    text: expenseText.value,
-    amount
-  };
-
-  expenses.push(expense);
-  localStorage.setItem('expenses', JSON.stringify(expenses));
-
-  expenseText.value = '';
-  expenseAmount.value = '';
-
-  updateUI();
-});
-
-/* ---------- UI FUNCTIONS ---------- */
-function updateUI() {
-  list.innerHTML = '';
-
-  expenses.forEach(e => {
-    const li = document.createElement('li');
-    li.innerHTML = `
-      ${e.text}
-      <span>-₹${e.amount}</span>
-      <button onclick="removeExpense(${e.id})">x</button>
+    const item = document.createElement('li');
+    item.innerHTML = `
+        ${transaction.text} 
+        <span>${sign}₹${Math.abs(transaction.amount)}</span>
+        <button onclick="removeTransaction(${transaction.id})">x</button>
     `;
-    list.appendChild(li);
-  });
-
-  const totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
-  const balanceAmount = income - totalExpense;
-
-  balance.innerText = `₹${balanceAmount}`;
-  money_plus.innerText = `₹${income}`;
-  money_minus.innerText = `₹${totalExpense}`;
+    list.appendChild(item);
 }
 
-function removeExpense(id) {
-  expenses = expenses.filter(e => e.id !== id);
-  localStorage.setItem('expenses', JSON.stringify(expenses));
-  updateUI();
+function updateValues() {
+    const amounts = transactions.map(t => t.amount);
+    const total = amounts.reduce((acc, item) => acc + item, 0);
+    const income = amounts.filter(item => item > 0)
+        .reduce((acc, item) => acc + item, 0);
+    const expense = amounts.filter(item => item < 0)
+        .reduce((acc, item) => acc + item, 0);
+
+    balance.innerText = `₹${total}`;
+    money_plus.innerText = `₹${income}`;
+    money_minus.innerText = `₹${Math.abs(expense)}`;
 }
 
-updateUI();
+function removeTransaction(id) {
+    transactions = transactions.filter(t => t.id !== id);
+    updateLocalStorage();
+    init();
+}
+
+function updateLocalStorage() {
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+}
+
+function init() {
+    list.innerHTML = '';
+    transactions.forEach(addTransactionDOM);
+    updateValues();
+}
+
+form.addEventListener('submit', addTransaction);
+init();
